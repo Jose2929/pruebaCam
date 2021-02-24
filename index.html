@@ -1,14 +1,62 @@
-<video id="player" autoplay style="height: 800px;"></video>
+<center>
+    <div style="border-style: solid; border-color: black; width: 300px; margin-bottom: 2rem;">
+        <h2>Consola</h2>
+        <p id="consola"></p>
+    </div>
+
+    <div style="border-style: solid; border-color: black; width: 300px;">
+        <h2>Pruebas de camara</h2>
+        <video id="player" autoplay style="height: 200px; margin-bottom: 1rem;"></video>
+    </div>
+
+    <div style="border-style: solid; border-color: black; width: 300px; margin-top: 2rem;">
+        <h2>Pruebas de geolocalizacion</h2>
+        <p>Latidud:  </p> <p id="lat"></p>
+        <p>Longitud: </p> <p id="lng"></p>
+    </div>
+
+</center>
+
 
 <script>
-  console.log("valor");
+
+    function imprimirConsola(msg){
+        let cons = document.getElementById('consola').innerHTML;
+        document.getElementById('consola').innerHTML= cons + '<br>' + msg;
+    }
+
 let video = document.getElementById("player");
+
+if(navigator && navigator.mediaDevices){
+    imprimirConsola('navigator.mediaDevices : ok')
+}else{
+    imprimirConsola('navigator.mediaDevices: Fail - Camara no compatible')
+}
+
+if(navigator && navigator.geolocation){
+    imprimirConsola('navigator.geolocation : ok')
+}else{
+    imprimirConsola('navigator.geolocation: Fail - GeoLoc no compatible')
+}
+
 navigator.mediaDevices.getUserMedia({
         audio: false,
         video: { width: 300, height: 300 }
     }).then( stream => {
+        imprimirConsola('Se accede a la camara');
         video.srcObject = stream;
-        console.log("entro");
-        
+    }).catch((err)=>{
+        imprimirConsola('Error en la camara: '+err); 
     });
+
+
+
+navigator.geolocation.getCurrentPosition((cord)=>{
+    imprimirConsola('entro en coordenadas')
+    document.getElementById('lat').innerHTML = cord.coords.latitude;
+    document.getElementById('lng').innerHTML = cord.coords.longitude;
+    imprimirConsola('cordenadas obtenidas')
+}, (err)=>{
+    imprimirConsola('Error en geoLoc: '+err);
+});
 </script>
